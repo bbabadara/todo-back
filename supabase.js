@@ -12,6 +12,8 @@ const isConfigured =
   !url.includes('changeme') &&
   !anonKey.includes('changeme');
 
+const effectiveKey = serviceKey && !serviceKey.includes('changeme') ? serviceKey : anonKey;
+
 class MemoryStore {
   constructor() {
     this.todos = [
@@ -106,7 +108,7 @@ function normalize(row) {
 
 function createStore() {
   if (isConfigured) {
-    const supabase = createClient(url, serviceKey || anonKey);
+    const supabase = createClient(url, effectiveKey);
     return { store: new SupabaseStore(supabase), backend: 'supabase' };
   }
   return { store: new MemoryStore(), backend: 'memory' };
